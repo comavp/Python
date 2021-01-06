@@ -1,0 +1,26 @@
+{
+	"year": "2021",
+	"income": [
+		"Стипендия",
+		"Работа",
+		"Инвестиции",
+		"Разное"
+	],
+	"expenses": [
+		"Еда",
+		"Быт",
+		"Здоровье",
+		"Транспорт и связь",
+		"Разное",
+		"Крупные траты",
+		"Инвестиции"
+	],
+	"showDeficitColumn": true,
+	"showMonthlyTable": true,
+	"showMonthlySalary": true,
+	"showTotalMonthlyIncome": true,
+	"showTotalMonthlyExpenses": true,
+	"showRegularExpenses": true,
+	"showMonthlyDifference": true,
+	"balanceFromPreviousYear": 999
+}
