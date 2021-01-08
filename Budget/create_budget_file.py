@@ -44,7 +44,38 @@ def read_config_file(config_name: str) -> dict:
         return json.load(config_file)
 
 
-def write_row(current_row: int, current_day: int, month_with_year: str, workbook, worksheet) -> None:
+def write_month_metrics(first_month_row: int, last_month_row: int, context: dict, worksheet):
+    total_monthly_income_name: str = 'Доходы:'
+    total_monthly_expenses_name: str = 'Раcходы:'
+    regular_expenses_name: str = 'Расходы без инвестиций и кр. трат'
+    monthly_salary_name: str = 'Зарплата'
+    monthly_difference_name: str = 'Остаток за м.'
+
+    total_monthly_income_formula: str = '=СУММ(B{0}:E{1})'.format(first_month_row, last_month_row)
+    total_monthly_expenses_formula: str = '=СУММ(G{0}:M{1})'.format(first_month_row, last_month_row)
+    regular_expenses_formula: str = '=СУММ(G{0}:K{1})'.format(first_month_row, last_month_row)
+    monthly_salary_formula: str = '=СУММ(C{0}:C{1})'.format(first_month_row, last_month_row)
+    monthly_difference_formula: str = '=O{1}-СУММ(G{0}:L{1})'.format(first_month_row, last_month_row)
+
+    worksheet.set_column(15, 15, len(monthly_difference_name))
+    if context.showTotalMonthlyIncome:
+        worksheet.write('O' + str(last_month_row - 1), total_monthly_income_name)
+        worksheet.write_formula('O' + str(last_month_row), total_monthly_income_formula)
+    if context.showTotalMonthlyExpenses:
+        worksheet.write('P' + str(last_month_row - 1), total_monthly_expenses_name)
+        worksheet.write_formula('P' + str(last_month_row), total_monthly_expenses_formula)
+    if context.showRegularExpenses:
+        worksheet.write('Q' + str(last_month_row - 1), regular_expenses_name)
+        worksheet.write_formula('Q' + str(last_month_row), regular_expenses_formula)
+    if context.showMonthlyDifference:
+        worksheet.write('P' + str(last_month_row - 3), monthly_difference_name)
+        worksheet.write_formula('Q' + str(last_month_row - 3), monthly_difference_formula)
+    if context.showMonthlySalary:
+        worksheet.write('P' + str(last_month_row - 4), monthly_salary_name)
+        worksheet.write_formula('Q' + str(last_month_row - 4), monthly_salary_formula)
+
+
+def write_row(current_row: int, current_day: int, month_with_year: str, workbook, worksheet, context) -> None:
     date_format = workbook.add_format({'right': 1, 'align': 'center'})
     right_border_format = workbook.add_format({'right': 1})
     bottom_border_format = workbook.add_format({'bottom': 1})
@@ -60,6 +91,11 @@ def write_row(current_row: int, current_day: int, month_with_year: str, workbook
         col = 0
 
     current_date = date_number_to_str_format(current_day) + '.' + month_with_year
+    balance_formula: str = '=B{row}+C{row}+D{row}+E{row}-F{row}-G{row}-H{row}-I{row}-J{row}-K{row}-L{row}-M{row}+{balance}'
+    if current_row == 2:
+        balance_formula = balance_formula.format(row=current_row + 1, balance=str(context.balanceFromPreviousYear))
+    else:
+        balance_formula = balance_formula.format(row=current_row + 1, balance='N' + str(current_row))
 
     worksheet.write(current_row, col, current_date, date_format)
 
@@ -70,15 +106,17 @@ def write_row(current_row: int, current_day: int, month_with_year: str, workbook
     worksheet.write_blank(income_border_ind, None, right_border_format)
     worksheet.write_blank(deficit_border_ind, None, right_border_format)
     worksheet.write_blank(expenses_border_ind, None, right_border_format)
-    worksheet.write_blank(balance_border_ind, None, right_border_format)
+    worksheet.write_formula(balance_border_ind, balance_formula, right_border_format)
 
 
-def write_month(current_month: str, current_year: str, previous_row: int, workbook, worksheet) -> None:
+def write_month(current_month: str, current_year: str, previous_row: int, workbook, worksheet, context: dict) -> None:
     month_with_year: str = current_month + '.' + current_year
     current_row: int = previous_row + 1
+    first_month_row: int = current_row
     for day in range(1, MONTHS_LENGTH[current_month] + 1):
-        write_row(current_row, day, month_with_year, workbook, worksheet)
+        write_row(current_row, day, month_with_year, workbook, worksheet, context)
         current_row += 1
+    write_month_metrics(first_month_row + 1, current_row, context, worksheet)
 
 
 def write_header(workbook, worksheet, header_list, context) -> None:
@@ -127,7 +165,7 @@ def create_file(config_dict: dict) -> None:
     current_row: int = 1
     for month_number in range(1, 13):
         current_month: str = date_number_to_str_format(month_number)
-        write_month(current_month, current_year, current_row, workbook, worksheet)
+        write_month(current_month, current_year, current_row, workbook, worksheet, context)
         current_row += MONTHS_LENGTH[current_month]
 
     workbook.close()
