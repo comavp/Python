@@ -2,6 +2,7 @@ import xlsxwriter
 from datetime import datetime
 import typing
 import json
+import string
 
 DEFAULT_CONFIG_NAME: str = 'config.json'
 MONTHS_LENGTH: dict = {'01': 31, '02': 28, '03': 31, '04': 30, '05': 31, '06': 30, '07': 31, '08': 31, '09': 30,
@@ -44,7 +45,55 @@ def read_config_file(config_name: str) -> dict:
         return json.load(config_file)
 
 
-def write_month_metrics(first_month_row: int, last_month_row: int, context: dict, worksheet):
+def write_monthly_table(first_month_row: int, last_month_row: int, workbook, worksheet, context: dict):
+    table_header_border_format = workbook.add_format({'bottom': 1, 'top': 1, 'align': 'center'})
+    table_header_left_format = workbook.add_format({'bottom': 1, 'top': 1, 'align': 'center', 'left': 1})
+    table_header_right_format = workbook.add_format({'bottom': 1, 'top': 1, 'align': 'center', 'right': 1})
+
+    table_body_left_format = workbook.add_format({'left': 1})
+    table_body_right_format = workbook.add_format({'right': 1})
+    table_body_bottom_format = None
+
+    curr_row = first_month_row + 3
+
+    # Write header of monthly table
+    worksheet.write_blank('P' + str(curr_row), None, table_header_left_format)
+    worksheet.write_blank('Q' + str(curr_row), None, table_header_right_format)
+    worksheet.write('R' + str(curr_row), 'Всего', table_header_border_format)
+    worksheet.write('S' + str(curr_row), '% от р', table_header_right_format)
+    worksheet.write('T' + str(curr_row), '% от д', table_header_right_format)
+
+    # Templates of table body formulas
+    total_formula_template: str = '=СУММ({col}{first_row}:{col}{last_row})'
+    percentage_of_expenses_template: str = '=R{curr_row}/P{last_row}*100'
+    percentage_of_income_template: str = '=R{curr_row}/O{last_row}*100'
+
+    curr_row += 1
+    cur_col: int = string.ascii_uppercase.find('G')
+
+    # Write body of monthly table
+    for item in context.expenses_list:
+        total_formula = total_formula_template.format(col=string.ascii_uppercase[cur_col], first_row=first_month_row,
+                                                      last_row=last_month_row)
+        percentage_of_expenses = percentage_of_expenses_template.format(curr_row=curr_row, last_row=last_month_row)
+        percentage_of_income = percentage_of_income_template.format(curr_row=curr_row, last_row=last_month_row)
+
+        if curr_row == first_month_row + 3 + context.expenses_list_length:
+            table_body_right_format = workbook.add_format({'right': 1, 'bottom': 1})
+            table_body_left_format = workbook.add_format({'left': 1, 'bottom': 1})
+            table_body_bottom_format = workbook.add_format({'bottom': 1})
+
+        worksheet.write('P' + str(curr_row), item, table_body_left_format)
+        worksheet.write_blank('Q' + str(curr_row), None, table_body_right_format)
+        worksheet.write('R' + str(curr_row), total_formula, table_body_bottom_format)
+        worksheet.write('S' + str(curr_row), percentage_of_expenses, table_body_right_format)
+        worksheet.write('T' + str(curr_row), percentage_of_income, table_body_right_format)
+
+        curr_row += 1
+        cur_col += 1
+
+
+def write_monthly_metrics(first_month_row: int, last_month_row: int, context: dict, worksheet):
     total_monthly_income_name: str = 'Доходы:'
     total_monthly_expenses_name: str = 'Раcходы:'
     regular_expenses_name: str = 'Расходы без инвестиций и кр. трат'
@@ -116,7 +165,9 @@ def write_month(current_month: str, current_year: str, previous_row: int, workbo
     for day in range(1, MONTHS_LENGTH[current_month] + 1):
         write_row(current_row, day, month_with_year, workbook, worksheet, context)
         current_row += 1
-    write_month_metrics(first_month_row + 1, current_row, context, worksheet)
+    write_monthly_metrics(first_month_row + 1, current_row, context, worksheet)
+    if context.showMonthlyTable:
+        write_monthly_table(first_month_row + 1, current_row, workbook, worksheet, context)
 
 
 def write_header(workbook, worksheet, header_list, context) -> None:
