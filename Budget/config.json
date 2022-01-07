@@ -1,8 +1,8 @@
 {
-	"year": "2021",
+	"year": "2022",
 	"income": [
-		"Стипендия",
 		"Работа",
+		"Депозиты",
 		"Инвестиции",
 		"Разное"
 	],
@@ -22,5 +22,7 @@
 	"showTotalMonthlyExpenses": true,
 	"showRegularExpenses": true,
 	"showMonthlyDifference": true,
+	"showMonthlyBankInterest": true,
+	"showMonthlyDividends": true,
 	"balanceFromPreviousYear": 999
 }
