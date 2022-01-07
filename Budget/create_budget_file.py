@@ -1,6 +1,4 @@
 import xlsxwriter
-from datetime import datetime
-import typing
 import json
 import string
 
@@ -32,7 +30,7 @@ class WorkBookInformation:
 
 def change_feb_length_if_leap_year(current_year: int) -> None:
     if current_year % 4 == 0:
-        MONTHS_LENGTH['feb'] += 1
+        MONTHS_LENGTH['02'] += 1
 
 
 def date_number_to_str_format(month_number: int) -> str:
