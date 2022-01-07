@@ -176,15 +176,23 @@ def write_header(workbook, worksheet, header_list, context) -> None:
     balance_header = 'Баланс'
     deficit_header = 'Недостача'
 
+    # all values are zero indexed
+    income_start_column: int = 1
+    income_end_column: int = income_start_column + context.income_list_length - 1
+    expenses_start_column: int = income_end_column + 1
+    expenses_end_column: int = expenses_start_column + context.expenses_list_length - 1
+
     merge_format = workbook.add_format({'border': 1, 'align': 'center'})
 
-    worksheet.merge_range('B1:E1', income_header, merge_format)
+    worksheet.merge_range(0, income_start_column, 0, income_end_column, income_header, merge_format)
     if context.showDeficitColumn:
         deficit_column: int = context.income_list_length + 1
         worksheet.set_column(deficit_column, deficit_column, len(deficit_header) + 3)
-        worksheet.merge_range('F1:F2', deficit_header, merge_format)
-    worksheet.merge_range('G1:M1', expenses_header, merge_format)
-    worksheet.merge_range('N1:N2', balance_header, merge_format)
+        worksheet.merge_range(0, income_end_column + 1, 1, income_end_column + 1, deficit_header, merge_format)
+        expenses_start_column += 1
+        expenses_end_column += 1
+    worksheet.merge_range(0, expenses_start_column, 0, expenses_end_column, expenses_header, merge_format)
+    worksheet.merge_range(0, expenses_end_column + 1, 1, expenses_end_column + 1, balance_header, merge_format)
 
     border_format = workbook.add_format({'bottom': 1, 'top': 1, 'align': 'center'})
 
