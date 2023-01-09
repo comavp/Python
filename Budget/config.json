@@ -1,5 +1,5 @@
 {
-	"year": "2022",
+	"year": "2023",
 	"income": [
 		"Работа",
 		"Депозиты",
@@ -21,6 +21,7 @@
 	"showTotalMonthlyIncome": true,
 	"showTotalMonthlyExpenses": true,
 	"showRegularExpenses": true,
+	"showTotalMonthlyExpensesWithoutInvestments": true,
 	"showMonthlyDifference": true,
 	"showMonthlyBankInterest": true,
 	"showMonthlyDividends": true,

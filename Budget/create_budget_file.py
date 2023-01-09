@@ -21,6 +21,7 @@ class WorkBookInformation:
         self.showTotalMonthlyExpenses: bool = config_dict['showTotalMonthlyExpenses']
         # Expenses without investments and large expenses
         self.showRegularExpenses: bool = config_dict['showRegularExpenses']
+        self.showTotalMonthlyExpensesWithoutInvestments: bool = config_dict['showTotalMonthlyExpensesWithoutInvestments']
         # Difference between total income and total expenses without investments
         self.showMonthlyDifference: bool = config_dict['showMonthlyDifference']
         self.showMonthlyBankInterest: bool = config_dict['showMonthlyBankInterest']
@@ -97,6 +98,7 @@ def write_monthly_metrics(first_month_row: int, last_month_row: int, context: di
     total_monthly_income_name: str = 'Доходы:'
     total_monthly_expenses_name: str = 'Раcходы:'
     regular_expenses_name: str = 'Расходы без инвестиций и кр. трат'
+    total_monthly_expenses_without_investments_name: str = 'Расходы без инвестиций'
     monthly_salary_name: str = 'Зарплата'
     monthly_difference_name: str = 'Остаток за м.'
     monthly_bank_interest_name: str = 'Проценты'
@@ -105,6 +107,7 @@ def write_monthly_metrics(first_month_row: int, last_month_row: int, context: di
     total_monthly_income_formula: str = '=СУММ(B{0}:E{1})'.format(first_month_row, last_month_row)
     total_monthly_expenses_formula: str = '=СУММ(G{0}:M{1})'.format(first_month_row, last_month_row)
     regular_expenses_formula: str = '=СУММ(G{0}:K{1})'.format(first_month_row, last_month_row)
+    total_monthly_expenses_without_investments_formula: str = '=СУММ(G{0}:L{1})'.format(first_month_row, last_month_row)
     monthly_salary_formula: str = '=СУММ(B{0}:B{1})'.format(first_month_row, last_month_row)
     monthly_difference_formula: str = '=O{1}-СУММ(G{0}:L{1})'.format(first_month_row, last_month_row)
     monthly_bank_interest_formula: str = '=СУММ(C{0}:C{1})'.format(first_month_row, last_month_row)
@@ -120,6 +123,9 @@ def write_monthly_metrics(first_month_row: int, last_month_row: int, context: di
     if context.showRegularExpenses:
         worksheet.write('Q' + str(last_month_row - 1), regular_expenses_name)
         worksheet.write_formula('Q' + str(last_month_row), regular_expenses_formula)
+    if context.showTotalMonthlyExpensesWithoutInvestments:
+        worksheet.write('U' + str(last_month_row - 1), total_monthly_expenses_without_investments_name)
+        worksheet.write_formula('U' + str(last_month_row), total_monthly_expenses_without_investments_formula)
     if context.showMonthlyDifference:
         worksheet.write('P' + str(last_month_row - 3), monthly_difference_name)
         worksheet.write_formula('Q' + str(last_month_row - 3), monthly_difference_formula)
