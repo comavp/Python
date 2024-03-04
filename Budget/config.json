@@ -4,13 +4,13 @@
 		"incomeHeader": "Доходы",
 		"expensesHeader": "Расходы",
 		"balanceHeader": "Баланс",
-		"deficitHeader": "Недостача"
+		"deficitHeader": "Недостача",
+		"investmentsHeader": "Инвестиции"
 	},
 	"monthlyMetrics": {
 		"monthlyIncomeName": "Доходы",
 		"monthlyExpensesName": "Расходы",
-		"regularExpenses": "Расходы без инвестиций и кр. трат",
-		"totalMonthlyExpensesWithoutInvestmentsName": "Расходы без инвестиций",
+		"regularExpenses": "Расходы без крупных трат",
 		"monthlySalaryName": "Зарплата",
     	"monthlyDifferenceName": "Остаток за м.",
     	"monthlyBankInterestName": "Проценты",
@@ -28,8 +28,7 @@
 		"Здоровье",
 		"Транспорт и связь",
 		"Разное",
-		"Крупные траты",
-		"Инвестиции"
+		"Крупные траты"
 	],
 	"showDeficitColumn": true,
 	"showMonthlyTable": true,
@@ -37,7 +36,6 @@
 	"showTotalMonthlyIncome": true,
 	"showTotalMonthlyExpenses": true,
 	"showRegularExpenses": true,
-	"showTotalMonthlyExpensesWithoutInvestments": true,
 	"showMonthlyDifference": true,
 	"showMonthlyBankInterest": true,
 	"showMonthlyDividends": true,
