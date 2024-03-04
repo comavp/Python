@@ -19,6 +19,8 @@ class WorkBookInformation:
         self.showDeficitColumn: bool = config_dict['showDeficitColumn']
         self.showMonthlyTable: bool = config_dict['showMonthlyTable']
         self.showMonthlySalary: bool = config_dict['showMonthlySalary']
+        self.showMonthlySavingsRate: bool = config_dict['showMonthlySavingsRate']
+        self.showMonthlyInvestments: bool = config_dict['showMonthlyInvestments']
         self.showTotalMonthlyIncome: bool = config_dict['showTotalMonthlyIncome']
         self.showTotalMonthlyExpenses: bool = config_dict['showTotalMonthlyExpenses']
         # Expenses without investments and large expenses
@@ -66,7 +68,7 @@ def write_monthly_table(first_month_row: int, last_month_row: int, workbook, wor
     worksheet.write('T' + str(curr_row), '% от д', table_header_right_format)
 
     # Templates of table body formulas
-    total_formula_template: str = '=СУММ({col}{first_row}:{col}{last_row})'
+    total_formula_template: str = '=SUM({col}{first_row}:{col}{last_row})'
     percentage_of_expenses_template: str = '=R{curr_row}/P{last_row}*100'
     percentage_of_income_template: str = '=R{curr_row}/O{last_row}*100'
 
@@ -100,17 +102,21 @@ def write_monthly_metrics(first_month_row: int, last_month_row: int, context: di
     total_monthly_expenses_name: str = context.monthly_metrics['monthlyExpensesName']
     regular_expenses_name: str = context.monthly_metrics['regularExpenses']
     monthly_salary_name: str = context.monthly_metrics['monthlySalaryName']
+    monthly_savings_rate_name: str = context.monthly_metrics['monthlySavingsRateName']
+    monthly_investments_name: str = context.monthly_metrics['monthlyInvestmentsName']
     monthly_difference_name: str = context.monthly_metrics['monthlyDifferenceName']
     monthly_bank_interest_name: str = context.monthly_metrics['monthlyBankInterestName']
     monthly_dividends_name: str = context.monthly_metrics['monthlyDividendsName']
 
-    total_monthly_income_formula: str = '=СУММ(B{0}:E{1})'.format(first_month_row, last_month_row)
-    total_monthly_expenses_formula: str = '=СУММ(G{0}:L{1})'.format(first_month_row, last_month_row)
-    regular_expenses_formula: str = '=СУММ(G{0}:K{1})'.format(first_month_row, last_month_row)
-    monthly_salary_formula: str = '=СУММ(B{0}:B{1})'.format(first_month_row, last_month_row)
-    monthly_difference_formula: str = '=O{1}-СУММ(G{0}:L{1})'.format(first_month_row, last_month_row)
-    monthly_bank_interest_formula: str = '=СУММ(C{0}:C{1})'.format(first_month_row, last_month_row)
-    monthly_dividends_formula: str = '=СУММ(D{0}:D{1})'.format(first_month_row, last_month_row)
+    total_monthly_income_formula: str = '=SUM(B{0}:E{1})'.format(first_month_row, last_month_row)
+    total_monthly_expenses_formula: str = '=SUM(G{0}:L{1})'.format(first_month_row, last_month_row)
+    regular_expenses_formula: str = '=SUM(G{0}:K{1})'.format(first_month_row, last_month_row)
+    monthly_salary_formula: str = '=SUM(B{0}:B{1})'.format(first_month_row, last_month_row)
+    monthly_savings_rate_formula: str = '=ROUND(((O{0}-P{1})/O{2})*100,2)'.format(last_month_row, last_month_row, last_month_row)
+    monthly_investments_formula: str = '=SUM(M{0}:M{1})'.format(first_month_row, last_month_row)
+    monthly_difference_formula: str = '=O{1}-SUM(G{0}:M{1})'.format(first_month_row, last_month_row)
+    monthly_bank_interest_formula: str = '=SUM(C{0}:C{1})'.format(first_month_row, last_month_row)
+    monthly_dividends_formula: str = '=SUM(D{0}:D{1})'.format(first_month_row, last_month_row)
 
     worksheet.set_column(15, 15, len(monthly_difference_name))
     if context.showTotalMonthlyIncome:
@@ -122,18 +128,26 @@ def write_monthly_metrics(first_month_row: int, last_month_row: int, context: di
     if context.showRegularExpenses:
         worksheet.write('Q' + str(last_month_row - 1), regular_expenses_name)
         worksheet.write_formula('Q' + str(last_month_row), regular_expenses_formula)
+
+    if context.showMonthlySavingsRate:
+        worksheet.write('P' + str(last_month_row - 5), monthly_savings_rate_name)
+        worksheet.write_formula('Q' + str(last_month_row - 5), monthly_savings_rate_formula)
+    if context.showMonthlyInvestments:
+        worksheet.write('P' + str(last_month_row - 4), monthly_investments_name)
+        worksheet.write_formula('Q' + str(last_month_row - 4), monthly_investments_formula)
     if context.showMonthlyDifference:
         worksheet.write('P' + str(last_month_row - 3), monthly_difference_name)
         worksheet.write_formula('Q' + str(last_month_row - 3), monthly_difference_formula)
+
     if context.showMonthlySalary:
-        worksheet.write('P' + str(last_month_row - 4), monthly_salary_name)
-        worksheet.write_formula('Q' + str(last_month_row - 4), monthly_salary_formula)
+        worksheet.write('P' + str(last_month_row - 7), monthly_salary_name)
+        worksheet.write_formula('Q' + str(last_month_row - 7), monthly_salary_formula)
     if context.showMonthlyBankInterest:
-        worksheet.write('P' + str(last_month_row - 5), monthly_bank_interest_name)
-        worksheet.write_formula('Q' + str(last_month_row - 5), monthly_bank_interest_formula)
+        worksheet.write('P' + str(last_month_row - 8), monthly_bank_interest_name)
+        worksheet.write_formula('Q' + str(last_month_row - 8), monthly_bank_interest_formula)
     if context.showMonthlyDividends:
-        worksheet.write('P' + str(last_month_row - 6), monthly_dividends_name)
-        worksheet.write_formula('Q' + str(last_month_row - 6), monthly_dividends_formula)
+        worksheet.write('P' + str(last_month_row - 9), monthly_dividends_name)
+        worksheet.write_formula('Q' + str(last_month_row - 9), monthly_dividends_formula)
 
 
 def write_row(current_row: int, current_day: int, month_with_year: str, workbook, worksheet, context) -> None:

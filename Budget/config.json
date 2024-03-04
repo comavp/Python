@@ -12,6 +12,8 @@
 		"monthlyExpensesName": "Расходы",
 		"regularExpenses": "Расходы без крупных трат",
 		"monthlySalaryName": "Зарплата",
+		"monthlySavingsRateName": "Норма сбережения",
+		"monthlyInvestmentsName": "Инвестиции",
     	"monthlyDifferenceName": "Остаток за м.",
     	"monthlyBankInterestName": "Проценты",
     	"monthlyDividendsName": "Дивиденды"
@@ -36,6 +38,8 @@
 	"showTotalMonthlyIncome": true,
 	"showTotalMonthlyExpenses": true,
 	"showRegularExpenses": true,
+	"showMonthlySavingsRate": true,
+	"showMonthlyInvestments": true,
 	"showMonthlyDifference": true,
 	"showMonthlyBankInterest": true,
 	"showMonthlyDividends": true,
