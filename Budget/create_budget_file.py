@@ -176,11 +176,13 @@ def write_row(current_row: int, current_day: int, month_with_year: str, workbook
 
     income_border_ind = 'E' + str(current_row + 1)
     deficit_border_ind = 'F' + str(current_row + 1)
-    expenses_border_ind = 'M' + str(current_row + 1)
+    expenses_border_ind = 'L' + str(current_row + 1)
+    investments_border_ind = 'M' + str(current_row + 1)
     balance_border_ind = 'N' + str(current_row + 1)
     worksheet.write_blank(income_border_ind, None, right_border_format)
     worksheet.write_blank(deficit_border_ind, None, right_border_format)
     worksheet.write_blank(expenses_border_ind, None, right_border_format)
+    worksheet.write_blank(investments_border_ind, None, right_border_format)
     worksheet.write_formula(balance_border_ind, balance_formula, right_border_format)
 
 
