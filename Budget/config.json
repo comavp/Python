@@ -1,5 +1,21 @@
 {
-	"year": "2023",
+	"year": "2024",
+	"fileHeaders": {
+		"incomeHeader": "Доходы",
+		"expensesHeader": "Расходы",
+		"balanceHeader": "Баланс",
+		"deficitHeader": "Недостача"
+	},
+	"monthlyMetrics": {
+		"monthlyIncomeName": "Доходы",
+		"monthlyExpensesName": "Расходы",
+		"regularExpenses": "Расходы без инвестиций и кр. трат",
+		"totalMonthlyExpensesWithoutInvestmentsName": "Расходы без инвестиций",
+		"monthlySalaryName": "Зарплата",
+    	"monthlyDifferenceName": "Остаток за м.",
+    	"monthlyBankInterestName": "Проценты",
+    	"monthlyDividendsName": "Дивиденды"
+	},
 	"income": [
 		"Работа",
 		"Депозиты",

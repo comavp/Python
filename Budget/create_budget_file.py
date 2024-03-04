@@ -10,6 +10,8 @@ MONTHS_LENGTH: dict = {'01': 31, '02': 28, '03': 31, '04': 30, '05': 31, '06': 3
 class WorkBookInformation:
     def __init__(self, config_dict: dict):
         self.year: str = config_dict['year']
+        self.file_headers: dict = config_dict['fileHeaders']
+        self.monthly_metrics: dict = config_dict['monthlyMetrics']
         self.income_list: list = config_dict['income']
         self.income_list_length: int = len(self.income_list)
         self.expenses_list: list = config_dict['expenses']
@@ -95,14 +97,14 @@ def write_monthly_table(first_month_row: int, last_month_row: int, workbook, wor
 
 
 def write_monthly_metrics(first_month_row: int, last_month_row: int, context: dict, worksheet):
-    total_monthly_income_name: str = 'Доходы:'
-    total_monthly_expenses_name: str = 'Раcходы:'
-    regular_expenses_name: str = 'Расходы без инвестиций и кр. трат'
-    total_monthly_expenses_without_investments_name: str = 'Расходы без инвестиций'
-    monthly_salary_name: str = 'Зарплата'
-    monthly_difference_name: str = 'Остаток за м.'
-    monthly_bank_interest_name: str = 'Проценты'
-    monthly_dividends_name: str = 'Дивиденды'
+    total_monthly_income_name: str = context.monthly_metrics['monthlyIncomeName']
+    total_monthly_expenses_name: str = context.monthly_metrics['monthlyExpensesName']
+    regular_expenses_name: str = context.monthly_metrics['regularExpenses']
+    total_monthly_expenses_without_investments_name: str = context.monthly_metrics['totalMonthlyExpensesWithoutInvestmentsName']
+    monthly_salary_name: str = context.monthly_metrics['monthlySalaryName']
+    monthly_difference_name: str = context.monthly_metrics['monthlyDifferenceName']
+    monthly_bank_interest_name: str = context.monthly_metrics['monthlyBankInterestName']
+    monthly_dividends_name: str = context.monthly_metrics['monthlyDividendsName']
 
     total_monthly_income_formula: str = '=СУММ(B{0}:E{1})'.format(first_month_row, last_month_row)
     total_monthly_expenses_formula: str = '=СУММ(G{0}:M{1})'.format(first_month_row, last_month_row)
@@ -187,10 +189,10 @@ def write_month(current_month: str, current_year: str, previous_row: int, workbo
 
 
 def write_header(workbook, worksheet, header_list, context) -> None:
-    income_header = 'Доходы'
-    expenses_header = 'Расходы'
-    balance_header = 'Баланс'
-    deficit_header = 'Недостача'
+    income_header: str = context.file_headers['incomeHeader']
+    expenses_header: str = context.file_headers['expensesHeader']
+    balance_header: str = context.file_headers['balanceHeader']
+    deficit_header: str = context.file_headers['deficitHeader']
 
     # all values are zero indexed
     income_start_column: int = 1
