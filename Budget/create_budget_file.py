@@ -69,8 +69,8 @@ def write_monthly_table(first_month_row: int, last_month_row: int, workbook, wor
 
     # Templates of table body formulas
     total_formula_template: str = '=SUM({col}{first_row}:{col}{last_row})'
-    percentage_of_expenses_template: str = '=R{curr_row}/P{last_row}*100'
-    percentage_of_income_template: str = '=R{curr_row}/O{last_row}*100'
+    percentage_of_expenses_template: str = '=ROUND(R{curr_row}/P{last_row}*100,2)'
+    percentage_of_income_template: str = '=ROUND(R{curr_row}/O{last_row}*100,2)'
 
     curr_row += 1
     cur_col: int = string.ascii_uppercase.find('G')
